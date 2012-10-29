@@ -1,0 +1,30 @@
+# Window Repositioner
+
+## Goal
+
+Goal is to provide a facility that will reorganize windows on screen depending on current resolution. This includes move, resize, maximizing/minimizing. Reuqirements are:
+
+-   easy window repositioning (either all at once or one by one)
+-   recording current window parameters
+-   multiple presets for each possible screen resolution
+
+
+## Usage
+
+This looks at the case where windows are manipulated one by one.
+
+User will move curson on a window. Then, by pressing a key combination this window will be moved based on configuration for current resolution. By some alternate key combination current window position will be recorded. Eg:
+
+-   move: Ctrl + Win + m
+-   record: Ctrl + Win + m (twice)
+
+
+## Resources for AHK realization
+
+http://www.autohotkey.com/docs/Variables.htm#Screen
+http://www.autohotkey.com/docs/commands/LoopReadFile.htm
+http://www.autohotkey.com/docs/commands/WinGetPos.htm
+http://www.autohotkey.com/docs/commands/WinMove.htm
+http://www.autohotkey.com/docs/commands/WinMaximize.htm
+http://www.autohotkey.com/docs/commands/WinRestore.htm
+http://www.autohotkey.com/docs/commands/WinGetTitle.htm
