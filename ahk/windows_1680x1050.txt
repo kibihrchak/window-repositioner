@@ -1,4 +1,0 @@
-Name|X|Y|W|H|Maxmized
-
-Notepad|100|200|300|200|no
-Vimperator|12|13|14|15|no
