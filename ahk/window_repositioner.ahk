@@ -1,4 +1,5 @@
 #SingleInstance force
+Menu, Tray, Icon, window_repositioner.ico
 
 ; init ----------------------------------------------------
 res := {}
@@ -96,9 +97,6 @@ exit_sub:
 
 
 ; hotkeys -------------------------------------------------
-Esc::
-    ExitApp
-    
 ^#m::
     MouseGetPos, , , window_id
     WinGetTitle, window_title, ahk_id %window_id%
@@ -130,8 +128,8 @@ Esc::
     MouseGetPos, , , window_id
     WinGetTitle, window_title, ahk_id %window_id%
 
+    found_text := ""
     entry_index := find_entry(windows, window_title)
-    ;MsgBox, % entry_index
     
     current_entry := {}
 
@@ -144,15 +142,25 @@ Esc::
 
     if (entry_index > 0) {
         temp_title := windows[entry_index][1]
+        found_text = 
+            (
+-- Found matching item (full window name below) --
+%window_title%
+`n
+            )
     } else {
         temp_title := window_title
     }
-    ;MsgBox, % temp_title
 
-    InputBox, temp_title, Window title
-        ,Window title (no '|' character in name):
-        ,,200,150,,,,
+    InputBox, temp_title, Write window title
+        ,% found_text . "Window title (partial match, no '"
+            . field_sep . "' in name):"
+        ,,350,170,,,,
         ,% temp_title
+
+    if (ErrorLevel == 1) {
+        Return
+    }
 
     WinGet, temp_max, MinMax, % window_title
 
