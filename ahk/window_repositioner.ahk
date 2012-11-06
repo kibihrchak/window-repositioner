@@ -96,8 +96,34 @@ exit_sub:
     ExitApp
 
 
-; hotkeys -------------------------------------------------
+; hotkey --------------------------------------------------
 ^#m::
+    if (hotkey_presses > 0) {
+        hotkey_presses += 1
+    } else {
+        hotkey_presses := 1
+        SetTimer, HotkeyTimerExpired, -400
+    }
+
+    Return
+
+
+; operations ----------------------------------------------
+
+HotkeyTimerExpired:
+    if (hotkey_presses == 1) {
+        hotkey_presses := 0
+        Gosub, GetWindowPosition
+    }
+    if (hotkey_presses == 2) {
+        hotkey_presses := 0
+        Gosub, SetWindowPosition
+    }
+
+    Return
+
+
+GetWindowPosition:
     MouseGetPos, , , window_id
     WinGetTitle, window_title, ahk_id %window_id%
 
@@ -122,9 +148,8 @@ exit_sub:
     }
 
     Return
-
-
-^#n::
+    
+SetWindowPosition:
     MouseGetPos, , , window_id
     WinGetTitle, window_title, ahk_id %window_id%
 
