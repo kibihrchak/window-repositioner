@@ -60,6 +60,11 @@ save_entries(filename, entries, file_descr, field_sep) {
     f.WriteLine()
 
     for k, v in entries {
+        ; skipping empty entries
+        if (v[1] == "") {
+            Continue
+        }
+        
         for i, j in v {
             f.Write(j)
 
@@ -79,6 +84,11 @@ find_entry(entries, title) {
     entry_index := 0
 
     for i, v in entries {
+        ; skipping empty entries
+        if (v[1] == "") {
+            Continue
+        }
+
         if (InStr(title, v[1], true) != 0) {
             entry_index := i
             Break
@@ -86,6 +96,29 @@ find_entry(entries, title) {
     }
 
     Return entry_index
+}
+
+
+move_window(entries, window_title) {
+    entry_index := find_entry(entries, window_title)
+
+    if (entry_index > 0) {
+        ;MsgBox, % "Match found for """ . window_title . """: " . v[1]
+
+        found_entry := entries[entry_index]
+
+        WinMove, %window_title%, 
+            , found_entry[2]
+            , found_entry[3]
+            , found_entry[4]
+            , found_entry[5]
+
+        if (found_entry[6] == "yes") {
+            WinMaximize, %window_title%
+        } else {
+            WinRestore, %window_title%
+        }
+    }
 }
 
 
@@ -97,6 +130,9 @@ exit_sub:
 
 
 ; hotkey --------------------------------------------------
+^#r::
+    ExitApp
+
 ^#m::
     if (hotkey_presses > 0) {
         hotkey_presses += 1
@@ -111,13 +147,17 @@ exit_sub:
 ; operations ----------------------------------------------
 
 HotkeyTimerExpired:
-    if (hotkey_presses == 1) {
-        hotkey_presses := 0
+    temp_hotkey_presses := hotkey_presses
+    hotkey_presses := 0
+
+    if (temp_hotkey_presses == 1) {
         Gosub, GetWindowPosition
     }
-    if (hotkey_presses == 2) {
-        hotkey_presses := 0
+    if (temp_hotkey_presses == 2) {
         Gosub, SetWindowPosition
+    }
+    if (temp_hotkey_presses == 3) {
+        Gosub, RepositionAll
     }
 
     Return
@@ -127,25 +167,7 @@ GetWindowPosition:
     MouseGetPos, , , window_id
     WinGetTitle, window_title, ahk_id %window_id%
 
-    entry_index := find_entry(windows, window_title)
-
-    if (entry_index > 0) {
-        ;MsgBox, % "Match found for """ . window_title . """: " . v[1]
-
-        found_entry := windows[entry_index]
-
-        WinMove, %window_title%, 
-            , found_entry[2]
-            , found_entry[3]
-            , found_entry[4]
-            , found_entry[5]
-
-        if (found_entry[6] == "yes") {
-            WinMaximize, %window_title%
-        } else {
-            WinRestore, %window_title%
-        }
-    }
+    move_window(windows, window_title)
 
     Return
     
@@ -155,6 +177,8 @@ SetWindowPosition:
 
     found_text := ""
     entry_index := find_entry(windows, window_title)
+
+    ;MsgBox Found %entry_index%.
     
     current_entry := {}
 
@@ -178,30 +202,32 @@ SetWindowPosition:
     }
 
     InputBox, temp_title, Write window title
-        ,% found_text . "Window title (partial match, no '"
-            . field_sep . "' in name):"
-        ,,350,170,,,,
+        ,% found_text . "Enter window title (partial match, no '"
+            . field_sep . "' in name). Empty text deletes entry."
+        ,,350,200,,,,
         ,% temp_title
 
     if (ErrorLevel == 1) {
         Return
     }
 
-    WinGet, temp_max, MinMax, % window_title
+    if (temp_title != "") {
+        WinGet, temp_max, MinMax, % window_title
 
-    if (temp_max == 1) {
-        temp_max := "yes"
-    } else {
-        temp_max := "no"
-    }
+        if (temp_max == 1) {
+            temp_max := "yes"
+        } else {
+            temp_max := "no"
+        }
 
-    if (entry_index > 0 and temp_max == "yes") {
-        temp_x := windows[entry_index][2]
-        temp_y := windows[entry_index][3]
-        temp_w := windows[entry_index][4]
-        temp_h := windows[entry_index][5]
-    } else {
-        WinGetPos, temp_x, temp_y, temp_w, temp_h, % window_title
+        if (entry_index > 0 and temp_max == "yes") {
+            temp_x := windows[entry_index][2]
+            temp_y := windows[entry_index][3]
+            temp_w := windows[entry_index][4]
+            temp_h := windows[entry_index][5]
+        } else {
+            WinGetPos, temp_x, temp_y, temp_w, temp_h, % window_title
+        }
     }
 
     current_entry.Insert(1, temp_title
@@ -213,6 +239,19 @@ SetWindowPosition:
         windows[entry_index] := current_entry
     } else {
         windows.Insert(current_entry)
+    }
+
+    Return
+
+RepositionAll:
+    WinGet, id, List,,, Program Manager
+
+    Loop, %id%
+    {
+        this_id := id%A_Index%
+        WinGetTitle, current_window_title, ahk_id %this_id%
+
+        move_window(windows, current_window_title)
     }
 
     Return
