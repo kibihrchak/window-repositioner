@@ -130,9 +130,6 @@ exit_sub:
 
 
 ; hotkey --------------------------------------------------
-^#r::
-    ExitApp
-
 ^#m::
     if (hotkey_presses > 0) {
         hotkey_presses += 1
