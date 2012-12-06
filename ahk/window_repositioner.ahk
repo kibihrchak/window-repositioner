@@ -107,17 +107,17 @@ move_window(entries, window_title) {
 
         found_entry := entries[entry_index]
 
-        WinMove, %window_title%, 
-            , found_entry[2]
-            , found_entry[3]
-            , found_entry[4]
-            , found_entry[5]
-
         if (found_entry[6] == "yes") {
             WinMaximize, %window_title%
         } else {
             WinRestore, %window_title%
         }
+
+        WinMove, %window_title%, 
+            , found_entry[2]
+            , found_entry[3]
+            , found_entry[4]
+            , found_entry[5]
     }
 }
 
