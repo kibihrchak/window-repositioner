@@ -1,19 +1,43 @@
 #SingleInstance force
 Menu, Tray, Icon, window_repositioner.ico
 
+; config --------------------------------------------------
+field_sep := "|"
+filename_base := "windows_"
+main_hotkey := "^#m"
+;reset_hotkey := "^#r"
+
+
 ; init ----------------------------------------------------
 res := {}
 res.x := A_ScreenWidth
 res.y := A_ScreenHeight
-file_descr := "Name|position X|position Y|Width|Height|Maxmized (yes/no)"
-field_sep := "|"
-filename_base := "windows_"
+file_descr = 
+    (Join
+Name
+%field_sep%
+position X
+%field_sep%
+position Y
+%field_sep%
+Width
+%field_sep%
+Height
+%field_sep%
+Maxmized (yes/no)
+    )
 
 filename := filename_base . res.x . "x" res.y . ".ini"
 
 windows := load_entries(filename, field_sep)
 
 OnExit, exit_sub
+
+Hotkey, %main_hotkey%, MainAction
+
+if reset_hotkey {
+    Hotkey, %reset_hotkey%, ResetAction
+}
 
 Return
 
@@ -24,7 +48,7 @@ load_entries(filename, field_sep) {
 
     f := FileOpen(filename, "r")
 
-    if !IsObject(f) {
+    if (!IsObject(f)) {
         ;MsgBox, Can't open "%filename%" for reading.
         Return
     }
@@ -129,8 +153,12 @@ exit_sub:
     ExitApp
 
 
-; hotkey --------------------------------------------------
-^#m::
+; operations ----------------------------------------------
+ResetAction:
+    ExitApp
+    Return
+
+MainAction:
     if (hotkey_presses > 0) {
         hotkey_presses += 1
     } else {
@@ -140,8 +168,6 @@ exit_sub:
 
     Return
 
-
-; operations ----------------------------------------------
 
 HotkeyTimerExpired:
     temp_hotkey_presses := hotkey_presses
