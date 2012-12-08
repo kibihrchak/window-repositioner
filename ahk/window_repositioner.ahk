@@ -5,7 +5,7 @@ Menu, Tray, Icon, window_repositioner.ico
 field_sep := "|"
 filename_base := "windows_"
 main_hotkey := "^#m"
-;reset_hotkey := "^#r"
+close_hotkey := "^#r"
 
 
 ; init ----------------------------------------------------
@@ -31,12 +31,12 @@ filename := filename_base . res.x . "x" res.y . ".ini"
 
 windows := load_entries(filename, field_sep)
 
-OnExit, exit_sub
+OnExit, CloseAction
 
 Hotkey, %main_hotkey%, MainAction
 
-if reset_hotkey {
-    Hotkey, %reset_hotkey%, ResetAction
+if close_hotkey {
+    Hotkey, %close_hotkey%, CloseAction
 }
 
 Return
@@ -146,18 +146,7 @@ move_window(entries, window_title) {
 }
 
 
-exit_sub:
-    ;MsgBox Exiting script.
-    save_entries(filename, windows, file_descr, field_sep)
-
-    ExitApp
-
-
 ; operations ----------------------------------------------
-ResetAction:
-    ExitApp
-    Return
-
 MainAction:
     if (hotkey_presses > 0) {
         hotkey_presses += 1
@@ -167,6 +156,12 @@ MainAction:
     }
 
     Return
+
+CloseAction:
+    ;MsgBox Exiting script.
+    save_entries(filename, windows, file_descr, field_sep)
+
+    ExitApp
 
 
 HotkeyTimerExpired:
