@@ -113,6 +113,7 @@ find_entry(entries, title) {
             Continue
         }
 
+        ; check if `title` is contained in `entries`
         if (InStr(title, v[1], true) != 0) {
             entry_index := i
             Break
@@ -123,7 +124,9 @@ find_entry(entries, title) {
 }
 
 
-move_window(entries, window_title) {
+move_window(entries, window_id) {
+    WinGetTitle, window_title, ahk_id %window_id%
+
     entry_index := find_entry(entries, window_title)
 
     if (entry_index > 0) {
@@ -132,12 +135,12 @@ move_window(entries, window_title) {
         found_entry := entries[entry_index]
 
         if (found_entry[6] == "yes") {
-            WinMaximize, %window_title%
+            WinMaximize, ahk_id %window_id%
         } else {
-            WinRestore, %window_title%
+            WinRestore, ahk_id %window_id%
         }
 
-        WinMove, %window_title%, 
+        WinMove, ahk_id %window_id%, 
             , found_entry[2]
             , found_entry[3]
             , found_entry[4]
@@ -183,17 +186,17 @@ HotkeyTimerExpired:
 
 GetWindowPosition:
     MouseGetPos, , , window_id
-    WinGetTitle, window_title, ahk_id %window_id%
 
-    move_window(windows, window_title)
+    move_window(windows, window_id)
 
     Return
     
 SetWindowPosition:
     MouseGetPos, , , window_id
-    WinGetTitle, window_title, ahk_id %window_id%
 
     found_text := ""
+    WinGetTitle, window_title, ahk_id %window_id%
+
     entry_index := find_entry(windows, window_title)
 
     ;MsgBox Found %entry_index%.
@@ -267,9 +270,8 @@ RepositionAll:
     Loop, %id%
     {
         this_id := id%A_Index%
-        WinGetTitle, current_window_title, ahk_id %this_id%
 
-        move_window(windows, current_window_title)
+        move_window(windows, this_id)
     }
 
     Return
