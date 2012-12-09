@@ -7,8 +7,8 @@ Goal is to provide a facility that will reorganize windows on screen depending o
 -   easy window repositioning (either all at once or one by one)
 -   recording current window parameters
 -   multiple presets for each possible screen resolution
-    
-    Changing these presets is done externally (by reloading the app).
+
+Switching between different resolution presets is done externally (by reloading the script).
 
 
 ## Usage
@@ -17,20 +17,14 @@ This looks at the case where windows are manipulated one by one.
 
 User will move curson on a window. Then, by pressing a key combination this window will be moved based on configuration for current resolution. By some alternate key combination current window position will be recorded. Eg:
 
--   move: Ctrl + Win + m
--   record: Ctrl + Win + m (twice)
+-   reposition: Ctrl + Win + m
+-   record position: Ctrl + Win + m (twice)
+
+Also, there should be a possibility to reposition all opened windows based on current preset (if there is information for given window in preset). Eg:
+
+-   reposition opened windows: Ctrl + Win + m (three times)
 
 
 ## Realization
 
 The most appropriate way to realize requirements from above is via AutoHotkey.
-
-### Resources for AHK realization
-
-http://www.autohotkey.com/docs/Variables.htm#Screen
-http://www.autohotkey.com/docs/commands/LoopReadFile.htm
-http://www.autohotkey.com/docs/commands/WinGetPos.htm
-http://www.autohotkey.com/docs/commands/WinMove.htm
-http://www.autohotkey.com/docs/commands/WinMaximize.htm
-http://www.autohotkey.com/docs/commands/WinRestore.htm
-http://www.autohotkey.com/docs/commands/WinGetTitle.htm

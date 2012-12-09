@@ -12,6 +12,7 @@ close_hotkey := "^#r"
 res := {}
 res.x := A_ScreenWidth
 res.y := A_ScreenHeight
+
 file_descr = 
     (Join
 Name
