@@ -135,17 +135,18 @@ move_window(entries, window_id) {
 
         found_entry := entries[entry_index]
 
+
         if (found_entry[6] == "yes") {
             WinMaximize, ahk_id %window_id%
         } else {
             WinRestore, ahk_id %window_id%
-        }
 
-        WinMove, ahk_id %window_id%, 
-            , found_entry[2]
-            , found_entry[3]
-            , found_entry[4]
-            , found_entry[5]
+            WinMove, ahk_id %window_id%, 
+                , found_entry[2]
+                , found_entry[3]
+                , found_entry[4]
+                , found_entry[5]
+        }
     }
 }
 
