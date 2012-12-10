@@ -25,11 +25,11 @@ Also, there should be a possibility to reposition all opened windows based on cu
 -   reposition opened windows: Ctrl + Win + m (three times)
 
 
-## Realization
+## Implementation
 
-The most appropriate way to realize requirements from above is via AutoHotkey.
+The most appropriate way to implement requirements from above is via AutoHotkey.
 
-### Realization Specifics
+### Implementation Specifics
 
 -   presets are recorded in separate files, one per resolution (see `/ahk/windows_*.ini` for examples)
 -   preset is found by checking if window title contains content of `Name` field from preset file, going through lines in given order
